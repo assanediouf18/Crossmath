@@ -9,6 +9,13 @@ pub enum Operation {
     Minus
 }
 
+#[derive(Clone, Copy)]
+pub enum MatchParameter {
+    X,
+    Y,
+    Result,
+}
+
 // x +/- y = result
 pub struct Equation {
     x: u32,
@@ -36,6 +43,33 @@ impl Equation {
             x, y,
             operator,
             result
+        }
+    }
+
+    pub fn generate(param: MatchParameter, value: u32) -> Self {
+        let result: u32;
+        let x: u32;
+        let y: u32;
+        let operator: Operation;
+
+        let mut rng = rand::thread_rng();
+        match param {
+            MatchParameter::X => {
+                x = value;
+                y = rng.gen_range(1..MAX_NUMBER);
+            },
+            MatchParameter::Y => {
+                y = value;
+                x = rng.gen_range(1..MAX_NUMBER);
+            }
+            _ => return Equation::random_with(value)
+        }
+
+        operator = get_random_operator(x, y);
+        result = get_result(x, y, &operator);
+
+        Self {
+            x, y, operator, result
         }
     }
 
@@ -97,6 +131,18 @@ impl Equation {
 
     pub fn get_y(&self) -> u32 {
         self.y
+    }
+
+    pub fn get_result(&self) -> u32 {
+        self.result
+    }
+
+    pub fn to_array(&self) -> Vec<String> {
+        let oper = match self.operator {
+            Operation::Plus => "+",
+            Operation::Minus => "-",
+        };
+        vec![self.x.to_string(), oper.to_string(), self.y.to_string(), "=".to_string(), self.result.to_string()]
     }
 
     pub fn get_operation(&self) -> Operation {
