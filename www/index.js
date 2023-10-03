@@ -1,7 +1,7 @@
 import { Crossmath } from "wasm-crossmath";
 
 function generate_grid() {
-    const crossmath = Crossmath.new(4);
+    const crossmath = Crossmath.new(8);
     const width = crossmath.width();
     const height = crossmath.height();
     const grid = crossmath.render();
@@ -13,10 +13,10 @@ function generate_grid() {
 function show_grid(grid, width) {
     let board = document.querySelector("#board");
     board.innerHTML = "";
-    for(const value of grid.split(";")) {
+    for(const value of grid.split(";").slice(0, -1)) {
         let block = document.createElement("div");
         block.classList.add("block");
-        if(value != " ") {
+        if(value != " " && value != "\n" && value != "\0") {
             block.classList.add("filled");
             block.textContent = value;
         }

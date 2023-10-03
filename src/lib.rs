@@ -46,7 +46,6 @@ impl fmt::Display for Crossmath {
                 let symbol = self.grid[i as usize].clone();
                 write!(f, "{};", symbol)?;
             }
-            write!(f, "\n")?;
         }
 
         Ok(())
