@@ -1,9 +1,30 @@
+:root {
+    --size: 32px;
+}
+
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
 }
 
-.block.active {
-    background-color: red;
+.game {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.block {
+    min-width: var(--size);
+    min-height: var(--size);
+    padding: 5px;
+}
+
+.block.filled {
+    border: 1px solid #B97A57;
+    background-color: #FCEDBE;
+}
+
+.block.hidden {
+    background-color: #FEF8E2;
 }
