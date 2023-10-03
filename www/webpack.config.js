@@ -11,4 +11,12 @@ module.exports = {
   plugins: [
     new CopyWebpackPlugin(['index.html'])
   ],
+  module: {
+    rules: [
+      {
+        test: /\.css$/i,
+        use: ["css-loader"],
+      },
+    ],
+  }
 };
