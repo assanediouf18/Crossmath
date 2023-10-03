@@ -1,5 +1,6 @@
 :root {
     --size: 32px;
+    --grid-width: 10;
 }
 
 * {
@@ -12,6 +13,11 @@
     display: flex;
     justify-content: center;
     align-items: center;
+}
+
+#board {
+    display: grid;
+    grid-template-columns: repeat(var(--grid-width), 1fr);
 }
 
 .block {

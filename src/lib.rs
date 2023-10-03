@@ -44,7 +44,7 @@ impl fmt::Display for Crossmath {
             for x in 0..self.width {
                 let i = self.get_idx(x, y);
                 let symbol = self.grid[i as usize].clone();
-                write!(f, "{}", symbol)?;
+                write!(f, "{};", symbol)?;
             }
             write!(f, "\n")?;
         }
