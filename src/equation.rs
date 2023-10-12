@@ -16,6 +16,14 @@ pub enum MatchParameter {
     Result,
 }
 
+#[derive(Clone, Copy)]
+pub enum Direction {
+    Up,
+    Down,
+    Left,
+    Right,
+}
+
 // x +/- y = result
 pub struct Equation {
     x: u32,
@@ -137,12 +145,15 @@ impl Equation {
         self.result
     }
 
-    pub fn to_array(&self) -> Vec<String> {
+    pub fn to_array(&self, dir: Direction) -> Vec<String> {
         let oper = match self.operator {
             Operation::Plus => "+",
             Operation::Minus => "-",
         };
-        vec![self.x.to_string(), oper.to_string(), self.y.to_string(), "=".to_string(), self.result.to_string()]
+        match (dir, oper) {
+            (Direction::Left, "-") | (Direction::Up, "-") => vec![self.y.to_string(), oper.to_string(), self.x.to_string(), "=".to_string(), self.result.to_string()],
+            _ => vec![self.x.to_string(), oper.to_string(), self.y.to_string(), "=".to_string(), self.result.to_string()]
+        }
     }
 
     pub fn get_operation(&self) -> Operation {

@@ -1,19 +1,11 @@
 use crate::prelude::*;
 
-#[derive(Clone, Copy)]
-pub enum Direction {
-    Up,
-    Down,
-    Left,
-    Right,
-}
-
 // A macro to provide `println!(..)`-style syntax for `console.log` logging.
-// macro_rules! log {
-//     ( $( $t:tt )* ) => {
-//         web_sys::console::log_1(&format!( $( $t )* ).into());
-//     }
-// }
+macro_rules! log {
+    ( $( $t:tt )* ) => {
+        web_sys::console::log_1(&format!( $( $t )* ).into());
+    }
+}
 
 // On va faire simple dans un premier temps :
 // - On ne regarde pas s'il est possible de faire une liaison ici avec le résultat
@@ -65,9 +57,9 @@ pub fn insert_equation(width: i32,
     marked: &mut Vec<(usize, Direction)>) {
     let delta = get_direction_step(dir, width);
 
-    // log!("{}", eq.to_string());
+    log!("{}", eq.to_string());
     
-    let representation = eq.to_array();
+    let representation = eq.to_array(dir);
     for (idx, term) in representation.iter().enumerate() {
         let position = (start_position as i32 + (idx as i32 * delta)) as usize;
         if position > grid.len() {
@@ -112,6 +104,6 @@ mod tests {
     #[test]
     fn test_insertion() {
         let eq = Equation::new(3, 4, Operation::Plus);
-        assert_eq!(eq.to_array(), ["3", "+", "4", "=", "7"]);
+        assert_eq!(eq.to_array(Direction::Right), ["3", "+", "4", "=", "7"]);
     }
 }
