@@ -9,6 +9,7 @@ pub mod prelude {
     pub use std::fmt;
     pub use wasm_bindgen::prelude::*;
     pub use crate::insertion::*;
+    pub use rand::Rng;
 }
 
 use prelude::*;
@@ -104,16 +105,13 @@ impl Crossmath {
                     "Grid creation : the string {base_nb} cannot be converted to a u32."
                 );
 
-            if let Some((dir, param)) = is_insertion_possible(self.width as i32, &grid, chosen_position, current_dir) {
-                let delta = get_direction_step(dir, self.width as i32);
-                let start_position = match param {
-                    MatchParameter::Y => (chosen_position as i32) - 2 * delta,
-                    MatchParameter::Result => (chosen_position as i32) - 4 * delta,
-                    MatchParameter::X => chosen_position as i32
-                } as usize;
+            let param = get_random_match_parameter();
+            //Find equation
+            let eq = Equation::generate(param, base_nb);
 
-                //Find equation
-                let eq = Equation::generate(param, base_nb);
+            if let Some(dir) = is_insertion_possible(self.width as i32, &grid, chosen_position, current_dir, param) {
+                let delta = get_direction_step(dir, self.width as i32);
+                let start_position = get_start_position(chosen_position, param, delta);
 
                 //Insert
                 insert_equation(self.width as i32, &mut grid, start_position, dir, eq, &mut numbers_positions);

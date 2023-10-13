@@ -1,12 +1,11 @@
 use std::cmp::Ordering;
 
-use rand::Rng;
 use crate::prelude::*;
 
 #[derive(Clone, Copy)]
 pub enum Operation {
     Plus,
-    Minus
+    Minus,
 }
 
 #[derive(Clone, Copy)]
@@ -34,10 +33,12 @@ pub struct Equation {
 
 impl Equation {
     pub fn new(x: u32, y: u32, operator: Operation) -> Self {
-        let result = get_result(x, y, &operator);
+        let (result, x, y) = get_result(x, y, &operator);
         Self {
-            x, y, operator,
-            result
+            x,
+            y,
+            operator,
+            result,
         }
     }
 
@@ -45,19 +46,20 @@ impl Equation {
         let mut rng = rand::thread_rng();
         let x = rng.gen_range(1..MAX_NUMBER);
         let y = rng.gen_range(1..MAX_NUMBER);
-        let operator = get_random_operator(x, y);
-        let result = get_result(x, y, &operator);
+        let operator = get_random_operator();
+        let (result, x, y) = get_result(x, y, &operator);
         Self {
-            x, y,
+            x,
+            y,
             operator,
-            result
+            result,
         }
     }
 
     pub fn generate(param: MatchParameter, value: u32) -> Self {
-        let result: u32;
         let x: u32;
         let y: u32;
+        let result: u32;
         let operator: Operation;
 
         let mut rng = rand::thread_rng();
@@ -65,26 +67,54 @@ impl Equation {
             MatchParameter::X => {
                 x = value;
                 y = rng.gen_range(1..MAX_NUMBER);
-            },
+                operator = if x > y {
+                    get_random_operator()
+                } else {
+                    Operation::Plus
+                };
+            }
             MatchParameter::Y => {
                 y = value;
                 x = rng.gen_range(1..MAX_NUMBER);
+                operator = get_random_operator();
             }
-            _ => return Equation::random_with(value)
+            MatchParameter::Result => {
+                result = value;
+                x = rng.gen_range(1..MAX_NUMBER);
+                match x.cmp(&result) {
+                    Ordering::Greater => {
+                        y = x - result;
+                        operator = Operation::Minus;
+                    }
+                    _ => {
+                        y = result - x;
+                        operator = Operation::Plus;
+                    }
+                };
+                
+                return Self {
+                    x,
+                    y,
+                    operator,
+                    result,
+                };
+            }
         }
 
-        operator = get_random_operator(x, y);
-        result = get_result(x, y, &operator);
+        let (result, x, y) = get_result(x, y, &operator);
 
         Self {
-            x, y, operator, result
+            x,
+            y,
+            operator,
+            result,
         }
     }
 
     pub fn random_with(value: u32) -> Self {
         let result: u32;
-        let x: u32;
-        let y: u32;
+        let mut x: u32;
+        let mut y: u32;
         let operator: Operation;
 
         let mut rng = rand::thread_rng();
@@ -96,7 +126,7 @@ impl Equation {
                 Ordering::Greater => {
                     y = x - result;
                     operator = Operation::Minus;
-                },
+                }
                 _ => {
                     y = result - x;
                     operator = Operation::Plus;
@@ -105,19 +135,20 @@ impl Equation {
         } else if proba < 0.66 {
             x = value;
             y = rng.gen_range(1..MAX_NUMBER);
-            operator = get_random_operator(x, y);
-            result = get_result(x, y, &operator);
+            operator = get_random_operator();
+            (result, x, y) = get_result(x, y, &operator);
         } else {
             y = value;
             x = rng.gen_range(1..MAX_NUMBER);
-            operator = get_random_operator(x, y);
-            result = get_result(x, y, &operator);
+            operator = get_random_operator();
+            (result, x, y) = get_result(x, y, &operator);
         }
 
         Self {
-            x, y,
+            x,
+            y,
             operator,
-            result
+            result,
         }
     }
 
@@ -151,8 +182,20 @@ impl Equation {
             Operation::Minus => "-",
         };
         match (dir, oper) {
-            (Direction::Left, "-") | (Direction::Up, "-") => vec![self.y.to_string(), oper.to_string(), self.x.to_string(), "=".to_string(), self.result.to_string()],
-            _ => vec![self.x.to_string(), oper.to_string(), self.y.to_string(), "=".to_string(), self.result.to_string()]
+            // (Direction::Left, "-") | (Direction::Up, "-") => vec![
+            //     self.y.to_string(),
+            //     oper.to_string(),
+            //     self.x.to_string(),
+            //     "=".to_string(),
+            //     self.result.to_string(),
+            // ],
+            _ => vec![
+                self.x.to_string(),
+                oper.to_string(),
+                self.y.to_string(),
+                "=".to_string(),
+                self.result.to_string(),
+            ],
         }
     }
 
@@ -173,20 +216,22 @@ impl Equation {
     }
 }
 
-fn get_random_operator(x: u32, y: u32) -> Operation {
-    if y > x {
+fn get_random_operator() -> Operation {
+    if rand::thread_rng().gen_range(0..100) > 50 {
         Operation::Plus
-    } else if rand::thread_rng().gen_range(0..100) > 50 {
-        Operation::Minus
     } else {
-        Operation::Plus
+        Operation::Minus
     }
 }
 
-fn get_result(x: u32, y: u32, operator: &Operation) -> u32 {
+/** Returns (result, x, y) */
+fn get_result(x: u32, y: u32, operator: &Operation) -> (u32, u32, u32) {
     match operator {
-        Operation::Plus => x + y,
-        Operation::Minus => x - y,
+        Operation::Plus => (x + y, x, y),
+        Operation::Minus => match x.cmp(&y) {
+            Ordering::Less => (y - x, y, x),
+            _ => (x - y, x, y),
+        },
     }
 }
 
