@@ -36,3 +36,9 @@
     background-color: #FEF8E2;
     border: 1px solid #000a;
 }
+
+.option {
+    background-color: blue;
+    border: 1px solid #000a;
+    color: white;
+}

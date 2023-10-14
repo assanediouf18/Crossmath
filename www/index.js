@@ -7,13 +7,14 @@ function generate_grid() {
     const grid = crossmath.render();
     console.log(width)
     console.log(grid);
-    show_grid(grid, width)
+    show_grid(grid, width, height)
 }
 
-function show_grid(grid, width) {
+function show_grid(grid, width, height) {
     let board = document.querySelector("#board");
     board.innerHTML = "";
-    for(const value of grid.split(";").slice(0, -1)) {
+    let grid_len = width * height;
+    for(const value of grid.split(";").slice(0, grid_len)) {
         let block = document.createElement("div");
         block.classList.add("block");
         if(value === "?") {
@@ -25,6 +26,15 @@ function show_grid(grid, width) {
         board.appendChild(block)
     }
     board.style.setProperty("--grid-width", width.toString())
+
+    let options = document.querySelector("#options")
+    for(const value of grid.split(";").slice(grid_len, -1)) {
+        let block = document.createElement("div");
+        block.classList.add("block");
+        block.classList.add("option");
+        block.textContent = value;
+        options.appendChild(block)
+    }
 }
 
 generate_grid();
