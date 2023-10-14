@@ -36,11 +36,14 @@ pub fn is_insertion_possible(
 
     let match_position = position;
 
+    // log!("Trying : {}", eq.to_string());
+
     for dir in directions {
         let delta = get_direction_step(dir, width);
         let origin = eq.get_start_position(width, dir, match_param, match_position);
-        for i in (0..=4).rev() {
+        for i in 0..=4 {
             let position = (origin as i32) + i * delta;
+            // log!("Cell {position} ({i})");
 
             if position < 0 {
                 break;
@@ -51,7 +54,7 @@ pub fn is_insertion_possible(
                 break;
             }
 
-            log!("{}", grid[position]);
+            // log!("{}", grid[position]);
 
             if grid[position] != " " && position != match_position {
                 return None;
@@ -75,7 +78,7 @@ pub fn insert_equation(
 ) {
     let delta = get_direction_step(dir, width);
 
-    log!("{}", eq.to_string());
+    // log!("{}", eq.to_string());
 
     let representation = eq.to_array(dir);
     for (idx, term) in representation.iter().enumerate() {

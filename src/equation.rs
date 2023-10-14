@@ -78,7 +78,7 @@ impl Equation {
                 x = rng.gen_range(1..MAX_NUMBER);
                 operator = get_random_operator();
                 if operator == Operation::Minus && x < y {
-                    x = rng.gen_range(y..MAX_NUMBER);
+                    x = rng.gen_range(y..2*MAX_NUMBER);
                 }
             }
             MatchParameter::Result => {
