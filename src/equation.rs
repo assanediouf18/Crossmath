@@ -2,7 +2,7 @@ use std::cmp::Ordering;
 
 use crate::prelude::*;
 
-#[derive(Clone, Copy)]
+#[derive(Clone, Copy, PartialEq)]
 pub enum Operation {
     Plus,
     Minus,
@@ -57,7 +57,7 @@ impl Equation {
     }
 
     pub fn generate(param: MatchParameter, value: u32) -> Self {
-        let x: u32;
+        let mut x: u32;
         let y: u32;
         let result: u32;
         let operator: Operation;
@@ -77,6 +77,9 @@ impl Equation {
                 y = value;
                 x = rng.gen_range(1..MAX_NUMBER);
                 operator = get_random_operator();
+                if operator == Operation::Minus && x < y {
+                    x = rng.gen_range(y..MAX_NUMBER);
+                }
             }
             MatchParameter::Result => {
                 result = value;
@@ -182,13 +185,13 @@ impl Equation {
             Operation::Minus => "-",
         };
         match (dir, oper) {
-            // (Direction::Left, "-") | (Direction::Up, "-") => vec![
-            //     self.y.to_string(),
-            //     oper.to_string(),
-            //     self.x.to_string(),
-            //     "=".to_string(),
-            //     self.result.to_string(),
-            // ],
+            (Direction::Left, "-") | (Direction::Up, "-") => vec![
+                self.y.to_string(),
+                oper.to_string(),
+                self.x.to_string(),
+                "=".to_string(),
+                self.result.to_string(),
+            ],
             _ => vec![
                 self.x.to_string(),
                 oper.to_string(),
@@ -209,6 +212,23 @@ impl Equation {
             Operation::Plus => '+',
         };
         format!("{} {} {} = {}", self.x, sign, self.y, self.result)
+    }
+
+    pub fn get_start_position(&self, grid_width: i32, dir: Direction, param: MatchParameter, param_position: usize) -> usize {
+        let position = param_position;
+        let dir_step = get_direction_step(dir, grid_width);
+        let start_position = match param {
+            MatchParameter::Y => match (self.operator, dir) {
+                (Operation::Minus, Direction::Left) | (Operation::Minus, Direction::Up) => position as i32,
+                _ => (position as i32) - 2 * dir_step
+            },
+            MatchParameter::X => match (self.operator, dir) {
+                (Operation::Minus, Direction::Left) | (Operation::Minus, Direction::Up) => position as i32 - 2 * dir_step,
+                _ => position as i32
+            },
+            MatchParameter::Result => (position as i32) - 4 * dir_step,
+        } as usize;
+        start_position
     }
 
     pub fn show(&self) {
@@ -253,5 +273,84 @@ mod tests {
         let random_match = 2;
         let eq = Equation::random_with(random_match);
         assert!(eq.to_string().contains('2'));
+    }
+
+    #[test]
+    fn test_representation() {
+        let eq = Equation::new(3, 4, Operation::Plus);
+        assert_eq!(eq.to_array(Direction::Right), ["3", "+", "4", "=", "7"]);
+
+        let eq = Equation::new(4, 3, Operation::Minus);
+        assert_eq!(eq.to_array(Direction::Right), ["4", "-", "3", "=", "1"]);
+
+        let eq = Equation::new(4, 3, Operation::Minus);
+        assert_eq!(eq.to_array(Direction::Left), ["3", "-", "4", "=", "1"]);
+    }
+
+    #[test]
+    fn test_get_start_position_for_addition() {
+        let directions = [Direction::Left, Direction::Right, Direction::Down, Direction::Up];
+        let width = 100;
+        let param_position = 50;
+        let eq = Equation::new(3, 4, Operation::Plus);
+
+        let param = MatchParameter::X;
+        for dir in directions {
+            let pos = eq.get_start_position(width, dir, param, param_position);
+            assert_eq!(param_position, pos);
+        }
+
+        let param = MatchParameter::Y;
+        for dir in directions {
+            let delta = get_direction_step(dir, width);
+            let pos = eq.get_start_position(width, dir, param, param_position);
+            assert_eq!(50 - 2*delta, pos as i32);
+        }
+
+        let param = MatchParameter::Result;
+        for dir in directions {
+            let delta = get_direction_step(dir, width);
+            let pos = eq.get_start_position(width, dir, param, param_position);
+            assert_eq!(50 - 4*delta, pos as i32);
+        }
+    }
+
+    #[test]
+    fn test_get_start_position_for_substraction() {
+        let directions = [Direction::Left, Direction::Right, Direction::Down, Direction::Up];
+        let width = 100;
+        let param_position = 50;
+        let eq = Equation::new(4, 3, Operation::Minus);
+
+        let param = MatchParameter::X;
+        for dir in [Direction::Right, Direction::Down] {
+            let pos = eq.get_start_position(width, dir, param, param_position);
+            assert_eq!(param_position, pos);
+        }
+
+        for dir in [Direction::Left, Direction::Up] {
+            let delta = get_direction_step(dir, width);
+            let pos = eq.get_start_position(width, dir, param, param_position);
+            assert_eq!(50 - 2*delta, pos as i32);
+        }
+
+        let param = MatchParameter::Y;
+        for dir in [Direction::Right, Direction::Down] {
+            let delta = get_direction_step(dir, width);
+            let pos = eq.get_start_position(width, dir, param, param_position);
+            assert_eq!(50 - 2*delta, pos as i32);
+        }
+
+        for dir in [Direction::Left, Direction::Up] {
+            let pos = eq.get_start_position(width, dir, param, param_position);
+            assert_eq!(param_position, pos);
+        }
+
+        let param = MatchParameter::Result;
+        for dir in directions {
+            let delta = get_direction_step(dir, width);
+            let pos = eq.get_start_position(width, dir, param, param_position);
+            assert_eq!(50 - 4*delta, pos as i32);
+        }
     }
 }

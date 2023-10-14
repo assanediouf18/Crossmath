@@ -1,7 +1,7 @@
 import { Crossmath } from "wasm-crossmath";
 
 function generate_grid() {
-    const crossmath = Crossmath.new(8);
+    const crossmath = Crossmath.new(6);
     const width = crossmath.width();
     const height = crossmath.height();
     const grid = crossmath.render();

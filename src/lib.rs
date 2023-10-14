@@ -109,9 +109,8 @@ impl Crossmath {
             //Find equation
             let eq = Equation::generate(param, base_nb);
 
-            if let Some(dir) = is_insertion_possible(self.width as i32, &grid, chosen_position, current_dir, param) {
-                let delta = get_direction_step(dir, self.width as i32);
-                let start_position = get_start_position(chosen_position, param, delta);
+            if let Some(dir) = is_insertion_possible(self.width as i32, &grid, chosen_position, current_dir, param, &eq) {
+                let start_position = eq.get_start_position(self.width as i32, dir, param, chosen_position);
 
                 //Insert
                 insert_equation(self.width as i32, &mut grid, start_position, dir, eq, &mut numbers_positions);

@@ -1,11 +1,11 @@
 use crate::prelude::*;
 
 // A macro to provide `println!(..)`-style syntax for `console.log` logging.
-macro_rules! log {
-    ( $( $t:tt )* ) => {
-        web_sys::console::log_1(&format!( $( $t )* ).into());
-    }
-}
+// macro_rules! log {
+//     ( $( $t:tt )* ) => {
+//         web_sys::console::log_1(&format!( $( $t )* ).into());
+//     }
+// }
 
 pub fn get_random_match_parameter() -> MatchParameter {
     let mut rng = rand::thread_rng();
@@ -18,15 +18,6 @@ pub fn get_random_match_parameter() -> MatchParameter {
     MatchParameter::X
 }
 
-pub fn get_start_position(position: usize, param: MatchParameter, dir_step: i32) -> usize {
-    let start_position = match param {
-        MatchParameter::Y => (position as i32) - 2 * dir_step,
-        MatchParameter::Result => (position as i32) - 4 * dir_step,
-        MatchParameter::X => position as i32,
-    } as usize;
-    start_position
-}
-
 // On va faire simple dans un premier temps :
 // - On ne regarde pas s'il est possible de faire une liaison ici avec le résultat
 pub fn is_insertion_possible(
@@ -35,6 +26,7 @@ pub fn is_insertion_possible(
     position: usize,
     former_dir: Direction,
     match_param: MatchParameter,
+    eq: &Equation
 ) -> Option<Direction> {
 
     let directions = match former_dir {
@@ -46,9 +38,9 @@ pub fn is_insertion_possible(
 
     for dir in directions {
         let delta = get_direction_step(dir, width);
-        let origin = get_start_position(match_position, match_param, delta);
+        let origin = eq.get_start_position(width, dir, match_param, match_position);
         for i in (0..=4).rev() {
-            let position = origin as i32 + i * delta;
+            let position = (origin as i32) + i * delta;
 
             if position < 0 {
                 break;
@@ -59,7 +51,7 @@ pub fn is_insertion_possible(
                 break;
             }
 
-            log!("{}", grid[position]);
+            // log!("{}", grid[position]);
 
             if grid[position] != " " && position != match_position {
                 return None;
@@ -81,7 +73,7 @@ pub fn insert_equation(
 ) {
     let delta = get_direction_step(dir, width);
 
-    log!("{}", eq.to_string());
+    // log!("{}", eq.to_string());
 
     let representation = eq.to_array(dir);
     for (idx, term) in representation.iter().enumerate() {
@@ -121,16 +113,11 @@ mod tests {
 
     #[test]
     fn test_is_insertion_possible() {
+        let eq = Equation::new(3, 4, Operation::Plus);
         let grid: Vec<String> = (0..100).map(|_| " ".to_string()).collect();
-        match is_insertion_possible(100, &grid, 50, Direction::Up, MatchParameter::X) {
+        match is_insertion_possible(100, &grid, 50, Direction::Up, MatchParameter::X, &eq) {
             Some(_) => {}
             None => assert!(false, "The insertion is not working"),
         }
-    }
-
-    #[test]
-    fn test_insertion() {
-        let eq = Equation::new(3, 4, Operation::Plus);
-        assert_eq!(eq.to_array(Direction::Right), ["3", "+", "4", "=", "7"]);
     }
 }
