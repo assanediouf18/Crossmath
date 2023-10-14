@@ -26,10 +26,17 @@ pub struct Crossmath {
 
 impl fmt::Display for Crossmath {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        let mut rng = rand::thread_rng();
         for y in 0..self.height {
             for x in 0..self.width {
                 let i = self.get_idx(x, y);
-                let symbol = self.grid[i as usize].clone();
+                let mut symbol = self.grid[i as usize].clone();
+                if symbol.parse::<u32>().is_ok() {
+                    let proba: f64 = rng.gen();
+                    if proba < 0.2 {
+                        symbol = "?".to_string();
+                    }
+                }
                 write!(f, "{};", symbol)?;
             }
         }

@@ -16,7 +16,9 @@ function show_grid(grid, width) {
     for(const value of grid.split(";").slice(0, -1)) {
         let block = document.createElement("div");
         block.classList.add("block");
-        if(value != " " && value != "\n" && value != "\0") {
+        if(value === "?") {
+            block.classList.add("hidden");
+        } else if(value != " " && value != "\n" && value != "\0") {
             block.classList.add("filled");
             block.textContent = value;
         }

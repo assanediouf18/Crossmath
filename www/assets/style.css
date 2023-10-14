@@ -34,4 +34,5 @@
 
 .block.hidden {
     background-color: #FEF8E2;
+    border: 1px solid #000a;
 }
