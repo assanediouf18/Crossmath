@@ -255,6 +255,15 @@ fn get_result(x: u32, y: u32, operator: &Operation) -> (u32, u32, u32) {
     }
 }
 
+pub fn get_direction_step(dir: Direction, width: i32) -> i32 {
+    match dir {
+        Direction::Down => width,
+        Direction::Up => -width,
+        Direction::Left => -1,
+        Direction::Right => 1,
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;

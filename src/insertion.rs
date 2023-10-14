@@ -1,11 +1,11 @@
 use crate::prelude::*;
 
 // A macro to provide `println!(..)`-style syntax for `console.log` logging.
-// macro_rules! log {
-//     ( $( $t:tt )* ) => {
-//         web_sys::console::log_1(&format!( $( $t )* ).into());
-//     }
-// }
+macro_rules! log {
+    ( $( $t:tt )* ) => {
+        web_sys::console::log_1(&format!( $( $t )* ).into());
+    }
+}
 
 pub fn get_random_match_parameter() -> MatchParameter {
     let mut rng = rand::thread_rng();
@@ -51,11 +51,13 @@ pub fn is_insertion_possible(
                 break;
             }
 
-            // log!("{}", grid[position]);
+            log!("{}", grid[position]);
 
             if grid[position] != " " && position != match_position {
                 return None;
-            } else if i == 4 {
+            }
+            
+            if i == 4 {
                 return Some(dir);
             }
         }
@@ -73,7 +75,7 @@ pub fn insert_equation(
 ) {
     let delta = get_direction_step(dir, width);
 
-    // log!("{}", eq.to_string());
+    log!("{}", eq.to_string());
 
     let representation = eq.to_array(dir);
     for (idx, term) in representation.iter().enumerate() {
@@ -95,15 +97,6 @@ pub fn insert_equation(
             Ok(_) => marked.push((position, dir)),
             Err(_) => {}
         };
-    }
-}
-
-pub fn get_direction_step(dir: Direction, width: i32) -> i32 {
-    match dir {
-        Direction::Down => width,
-        Direction::Up => -width,
-        Direction::Left => -1,
-        Direction::Right => 1,
     }
 }
 
