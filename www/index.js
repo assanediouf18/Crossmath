@@ -5,8 +5,14 @@ function generate_grid() {
     const width = crossmath.width();
     const height = crossmath.height();
     const grid = crossmath.render();
-    console.log(width)
-    console.log(grid);
+
+    document.querySelector('#checkBtn').addEventListener("click", () => {
+        let answer = build_answer();
+        console.log(answer);
+        let val = crossmath.check(answer);
+        console.log(val);
+    })
+
     show_grid(grid, width, height)
 }
 
@@ -35,6 +41,16 @@ function show_grid(grid, width, height) {
         block.textContent = value;
         options.appendChild(block)
     }
+}
+
+function build_answer() {
+    let board = document.querySelector("#board");
+    let answer = "";
+    for(const block of board.children) {
+        answer += (block.textContent) ? block.textContent : " ";
+        answer += ";"
+    }
+    return answer;
 }
 
 generate_grid();

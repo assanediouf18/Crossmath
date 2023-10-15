@@ -1,12 +1,5 @@
 use crate::prelude::*;
 
-// A macro to provide `println!(..)`-style syntax for `console.log` logging.
-// macro_rules! log {
-//     ( $( $t:tt )* ) => {
-//         web_sys::console::log_1(&format!( $( $t )* ).into());
-//     }
-// }
-
 pub fn get_random_match_parameter() -> MatchParameter {
     let mut rng = rand::thread_rng();
     let proba: f64 = rng.gen();

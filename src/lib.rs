@@ -49,6 +49,13 @@ impl fmt::Display for Crossmath {
     }
 }
 
+// A macro to provide `println!(..)`-style syntax for `console.log` logging.
+macro_rules! log {
+    ( $( $t:tt )* ) => {
+        web_sys::console::log_1(&format!( $( $t )* ).into());
+    }
+}
+
 #[wasm_bindgen]
 impl Crossmath {
     pub fn new(number_of_equations: u32) -> Self {
@@ -80,6 +87,23 @@ impl Crossmath {
 
     pub fn height(&self) -> u32 {
         self.height
+    }
+
+    pub fn check(&self, player_answer: String) -> bool {
+        let player_answer: Vec<&str> = player_answer.split(';').collect();
+        if player_answer.len() != self.grid.len() + 1 {
+            log!("Longueur réponse : {}", player_answer.len());
+            log!("Longueur grille : {}", self.grid.len());
+            return false;
+        }
+        log!("Longueur réponse : {}", player_answer.len());
+        log!("Longueur grille : {}", self.grid.len());
+        for (index, cell) in self.grid.iter().enumerate() {
+            if *cell != player_answer[index] {
+                return false;
+            }
+        }
+        true
     }
 
     fn create_grid(&mut self, nb_of_equations: u32) {
