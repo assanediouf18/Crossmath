@@ -25,6 +25,7 @@ function show_grid(grid, width, height) {
         block.classList.add("block");
         if(value === "?") {
             block.classList.add("hidden");
+            block.setAttribute("contenteditable", true);
         } else if(value != " " && value != "\n" && value != "\0") {
             block.classList.add("filled");
             block.textContent = value;
