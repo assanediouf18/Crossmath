@@ -9,8 +9,11 @@ function generate_grid() {
     document.querySelector('#checkBtn').addEventListener("click", () => {
         let answer = build_answer();
         console.log(answer);
-        let val = crossmath.check(answer);
-        console.log(val);
+        let won = crossmath.check(answer);
+        let message = document.querySelector("#message");
+        message.textContent = won ? "Bravo ! Tu as gagné !" : "Oops ! Il semble qu'il y a des erreurs dans ta grille..."
+        let dialog = document.querySelector("#result-dialog");
+        dialog.showModal();
     })
 
     show_grid(grid, width, height)
@@ -34,7 +37,8 @@ function show_grid(grid, width, height) {
     }
     board.style.setProperty("--grid-width", width.toString())
 
-    let options = document.querySelector("#options")
+    let options = document.querySelector("#options div")
+    options.innerHTML = "";
     for(const value of grid.split(";").slice(grid_len, -1)) {
         let block = document.createElement("div");
         block.classList.add("block");
@@ -55,3 +59,22 @@ function build_answer() {
 }
 
 generate_grid();
+
+document.querySelector('#newGridBtn').addEventListener("click", () => {
+    generate_grid();
+})
+
+document.querySelector('#helpBtn').addEventListener("click", () => {
+    let dialog = document.querySelector("#help-dialog");
+    dialog.showModal();
+})
+
+document.querySelector("#help-dialog .close-dialog").addEventListener("click", () => {
+    let dialog = document.querySelector("#help-dialog");
+    dialog.close();
+})
+
+document.querySelector("#result-dialog .close-dialog").addEventListener("click", () => {
+    let dialog = document.querySelector("#result-dialog");
+    dialog.close();
+})

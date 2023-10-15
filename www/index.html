@@ -3,11 +3,14 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Sans:ital,wght@0,300;0,400;0,500;0,700;1,400;1,500&family=Lobster&display=swap" rel="stylesheet">
     <link href="assets/style.css" rel="stylesheet"/>
     <title>Crossmath</title>
   </head>
   <body>
-    <h1>Equations croisées</h1>
+    <h1 id="gameTitle">Equations croisées</h1>
     <h2>Un jeu à en perdre ses maths</h2>
     <h3>POK1 d'Assane Diouf</h3>
 
@@ -15,10 +18,31 @@
       <div id="board">
       </div>
 
-      <div id="options"></div>
+      <div id="options">
+        <h4>Les indices :</h4>
+        <div></div>
+      </div>
     </div>
 
-    <button id="checkBtn">Vérifier</button>
+    <div id="buttons">
+      <span class="btn" id="helpBtn">Aide</span>
+      <span class="btn" id="newGridBtn">Nouvelle grille</span>
+      <span class="btn" id="checkBtn">Vérifier</span>
+    </div>
+
+    <dialog id="help-dialog">
+      <h4>Aide</h4>
+      <p>Le but du jeu est de compléter la grille pour former des équations valides.</p>
+      <p>Pour ce faire, il faut écrire dans les cases vides.</p>
+      <p>En indice, vous avez les valeurs qui ont été retirées de ces cases</p>
+      <span class="btn close-dialog">Fermer</span>
+    </dialog>
+
+    <dialog id="result-dialog">
+      <h4>Résultat</h4>
+      <p id="message"></p>
+      <span class="btn close-dialog">Fermer</span>
+    </dialog>
     
     <noscript>This page contains webassembly and javascript content, please enable javascript in your browser.</noscript>
     <script src="./bootstrap.js"></script>

@@ -1,6 +1,10 @@
 :root {
+    --header-font: 'Lobster', sans-serif;
+    --main-font: 'Fira Sans', sans-serif;
     --size: 32px;
     --grid-width: 10;
+    --btn-color: #4F7CAC; 
+    /* #FF5964 */
 }
 
 * {
@@ -9,15 +13,72 @@
     box-sizing: border-box;
 }
 
+body {
+    font-family: var(--main-font);
+    text-align: center;
+}
+
+h1 {
+    font-family: var(--header-font);
+}
+
+h3 {
+    color: #000a;
+    font-weight: lighter;
+}
+
+#gameTitle {
+    font-size: 60px;
+    color: #162521;
+}
+
 .game {
+    max-width: 700px;
+    margin: 3em auto;
     display: flex;
     justify-content: center;
     align-items: center;
+    flex-direction: column;
 }
 
 #board {
     display: grid;
-    grid-template-columns: repeat(var(--grid-width), 1fr);
+    grid-template-columns: repeat(var(--grid-width), 32px);
+}
+
+#options {
+    margin: 1.5em auto;
+}
+
+#options div {
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: row;
+}
+
+#buttons {
+    margin: 1em;
+    padding: 1em;
+    position: absolute;
+    top: 0;
+    right: 0;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    align-items: center;
+}
+
+.btn {
+    margin: 8px;
+    background-color: var(--btn-color);
+    padding: 8px 12px;
+    border-radius: 12px;
+    cursor: pointer;
+}
+
+.btn.disabled {
+    background-color: white;
+    border: 1px solid var(--btn-color);
 }
 
 .block {
@@ -38,7 +99,21 @@
 }
 
 .option {
-    background-color: blue;
+    /* background-color: blue; */
+    background-color: #162521;
     border: 1px solid #000a;
     color: white;
+    margin: 8px;
+}
+
+dialog {
+    margin: auto;
+    border-radius: 12px;
+    padding: 2em;
+    border-color: #3C474B;
+}
+
+dialog .close-dialog {
+    position: relative;
+    top: 12px;
 }
