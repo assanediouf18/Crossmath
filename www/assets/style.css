@@ -117,3 +117,54 @@ dialog .close-dialog {
     position: relative;
     top: 12px;
 }
+
+#closeBtn:hover {
+    cursor: pointer;
+}
+
+#menuBtn, #closeBtn {
+    display: none;
+}
+
+@media (max-width: 1061px) {
+    #buttons {
+        display: none;
+    }
+
+    #buttons.active {
+        display: flex;
+        flex-direction: column;
+        border: #162521 1px solid;
+        border-radius: 10px;
+        backdrop-filter: blur(4px);
+        padding: 1em;
+        width: 200px;
+        left: calc(50vw - 100px);
+        top: 10vh;
+    }
+
+    #buttons.active #closeBtn {
+        display: block;
+        color: #4F7CAC;
+    }
+
+    #menuBtn {
+        display: block;
+        position: absolute;
+        top: 20px;
+        left: 2vw;
+    }
+}
+
+@media (max-width: 700px) {
+    #buttons {
+        display: none;
+    }
+
+    #menuBtn {
+        display: block;
+        position: relative;
+        margin: auto;
+        width: fit-content;
+    }
+}

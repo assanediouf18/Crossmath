@@ -69,6 +69,14 @@ document.querySelector('#helpBtn').addEventListener("click", () => {
     dialog.showModal();
 })
 
+document.querySelector('#menuBtn').addEventListener("click", () => {
+    document.querySelector("#buttons").classList.toggle("active")
+})
+
+document.querySelector('#closeBtn').addEventListener("click", () => {
+    document.querySelector("#buttons").classList.remove("active")
+})
+
 document.querySelector("#help-dialog .close-dialog").addEventListener("click", () => {
     let dialog = document.querySelector("#help-dialog");
     dialog.close();
